@@ -1116,6 +1116,69 @@ function actualizarEstadoTarjetasContexto(
 
 
 /* =========================================================
+   DESPLAZAMIENTO AUTOMÁTICO AL PANEL EN MÓVIL
+   ========================================================= */
+
+function desplazarAlPanelConversacion() {
+
+  if (
+    !panelConversacion
+    || !window.matchMedia(
+      "(max-width: 900px)"
+    ).matches
+  ) {
+
+    return;
+
+  }
+
+
+  requestAnimationFrame(
+    () => {
+
+      requestAnimationFrame(
+        () => {
+
+          const alturaCabecera =
+            cabeceraSitio?.offsetHeight || 0;
+
+
+          const posicionPanel =
+            panelConversacion
+              .getBoundingClientRect()
+              .top
+            + window.scrollY
+            - alturaCabecera
+            - 16;
+
+
+          const reducirMovimiento =
+            window.matchMedia(
+              "(prefers-reduced-motion: reduce)"
+            ).matches;
+
+
+          window.scrollTo({
+            top: Math.max(
+              0,
+              posicionPanel
+            ),
+            behavior:
+              reducirMovimiento
+                ? "auto"
+                : "smooth"
+          });
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
    APERTURA DEL PANEL GENERADOR
    ========================================================= */
 
@@ -1336,6 +1399,9 @@ tarjetasContextoConversacion.forEach(
           type,
           true
         );
+
+
+        desplazarAlPanelConversacion();
 
       }
     );
